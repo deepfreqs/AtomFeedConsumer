@@ -1,0 +1,3 @@
+queue:
+ endpoint: https://sqs.us-east-2.amazonaws.com/072184692728/fromAtomFeedConsumer #http://localhost:9324
+ name:     fromAtomFeedConsumer

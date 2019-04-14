@@ -6,6 +6,7 @@ import java.util.Date;
 import java.util.List;
 
 import org.apache.http.client.utils.DateUtils;
+import org.deepfrequencies.atomfeedconsumer.sqsadapter.MessageService;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -36,7 +37,11 @@ public class AtomFeedConsumerPoller {
 	private Date lastModified = null;
 
 	private boolean pollingActivated;
-	
+
+	@Autowired
+	private MessageService messageService;
+
+
 //http://www.tagesschau.de/xml/atom/
 //http://rss.dw.com/atom/rss-de-all^
 //https://www.heise.de/newsticker/heise-atom.xml
@@ -94,6 +99,8 @@ public class AtomFeedConsumerPoller {
 					ObjectMapper mapper = new ObjectMapper(); 
 					try {
 						log.trace(mapper.writeValueAsString(entry));
+						// put entry in SQS queue
+						messageService.sendMessage(mapper.writeValueAsString(entry));
 					} catch (JsonProcessingException e) {
 						// TODO Auto-generated catch block
 						e.printStackTrace();
